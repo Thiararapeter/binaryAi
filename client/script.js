@@ -7,15 +7,15 @@ const chatContainer = document.querySelector('#chat_container');
 let loadInterval;
 
 function loader(element){
-    element.textContent = '';
+    element.textContent ='';
  
     loadInterval = setInterval(() => {
-        element.textContent += '.';
+        element.textContent +='*';
 
-        if(element.textContext === '...') {
-            element.textContent = '';
+        if(element.textContent === `******`) {
+            element.textContent =''; 
         }
-    },300)
+    },500)
 }
 
 function typeText(element, text) {
@@ -36,7 +36,7 @@ function generateUniqueId() {
     const randomNumber = Math.random();
     const hexadecimalString = randomNumber.toString(16);
 
-    return `id-${timestamp}-{hexadecimalString}`;
+    return `id-${timestamp}-${hexadecimalString}`;
 }
 
 function chatStripe (isAi, value, uniqueId) {
@@ -50,7 +50,7 @@ function chatStripe (isAi, value, uniqueId) {
                 alt="${isAi ? 'bot' : 'user'}"
              />
              </div>
-             <div class="message" id=${uniqueId}>${value}</div>
+             <div class="message" id="${uniqueId}">${value}</div>
           </div>
          </div>
         `
@@ -63,7 +63,9 @@ const handlesubmit = async (e) => {
     const data = new FormData(form);
 
     //user's chatstripe
-    chatContainer.innerHTML += chatStripe (false,data.get('prompt'));
+    const userChatStripe = document.createElement('div');
+    userChatStripe.innerHTML = chatStripe(false, data.get('prompt'));
+    chatContainer.appendChild(userChatStripe);
 
     form.reset();
 
@@ -72,6 +74,7 @@ const handlesubmit = async (e) => {
     chatContainer.innerHTML += chatStripe(true, " ", uniqueId);
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
+    clearInterval(loadInterval);
 
     const messageDiv =  document.getElementById(uniqueId);
 
